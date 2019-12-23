@@ -29,13 +29,20 @@ function placeLine()
 end
 
 --Moves the turtle into the correct location for creating a new line
-function moveNext()
+function moveNext(side)
+    if side == 0 then
         turtle.turnRight()
         turtle.forward()
         turtle.turnRight()
+    else 
+        turtle.turnLeft()
+        turtle.forward()
+        turtle.turnLeft()
+    end
 end
 
 function main()
+    local side = 0
         for i = 1, diameter do
             placeLine()
             moveNext()
