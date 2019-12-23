@@ -1,6 +1,4 @@
-local targs = { ... }
-
-local success, data = turtle.detect()
+local success, data = turtle.inspect()
 if success then
     print("Block name: ", data.name)
     print("Block metadata: ", data.metadata)
