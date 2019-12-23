@@ -24,6 +24,13 @@ function api.selectID(itemID, firstSlot, lastSlot)
 	if (not lastSlot) or (lastSlot > 16) then
 		lastSlot = 16
 	end
+	local currentSlot = turtle.getSelectedSlot()
+	if (currentSlot >= firstSlot) and (currentSlot <= lastSlot) then
+		local currentDetail = turtle.getItemDetail()
+		if currentDetail and (currentDetail.name == itemID) then
+			return true
+		end
+	end
 	for i = firstSlot, lastSlot do
 		local detail = turtle.getItemDetail(i)
 		if detail and (detail.name == itemID) then
