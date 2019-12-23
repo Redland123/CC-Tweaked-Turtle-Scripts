@@ -49,13 +49,12 @@ function moveNext(side)
         turtle.forward()
         turtle.turnLeft()
     end
+
+    turtle.forward()
 end
 
 function main()
     local side = 0
-
-    --Moves the bot forward to start
-    turtle.forward()
 
         for i = 0, diameter do
             placeLine()
