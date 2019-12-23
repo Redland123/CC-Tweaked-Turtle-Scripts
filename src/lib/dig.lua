@@ -1,4 +1,4 @@
-local movement = require("movement")
+local movement = require("lib.movement")
 
 local api = {}
 

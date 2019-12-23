@@ -1,6 +1,5 @@
 -- Imports
 
-require("lib.init")
 local Location = require("lib.Location")
 local Set = require("lib.Set")
 local utils = require("lib.utils")
