@@ -1,8 +1,11 @@
 local scripts = {
+    "craftbat",
+    "fill",
+    "itemID",
     "mine",
-    "rubber",
-    "fill"
-} 
+    "rubber"
+}
+
 local libs = {
     "dig",
     "inventory",
