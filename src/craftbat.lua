@@ -28,12 +28,23 @@ function extractItem(quantity, itemID, subID, slots, outOfMessage, incorrectMess
     return true
 end
 
+function checkChest()
+    local success, data = turtle.inspect()
+    return success and data.name == "minecraft:chest"
+end
+
 function nextChest()
-    return turtle.turnRight() and turtle.forward() and turtle.forward() and turtle.turnLeft()
+    if turtle.turnRight() and turtle.forward() and turtle.forward() and turtle.turnLeft() then
+        -- Verify chest in front of turtle
+        if checkChest() then
+            return true
+        end
+        print("No chest found!")
+    end
+    return false
 end
 
 function returnToFirstChest()
-    
     return false
 end
 
@@ -67,8 +78,17 @@ function craft()
         print("Error: Failed to move to deposit chest!")
         return false
     end
+    -- Craft item
+    turtle.select(1)
+    if not turtle.craft(quantity) then
+        print("Error: Failed to craft item!")
+        return false
+    end
     -- Deposit crafted item
-    -- TODO
+    if not turtle.drop(quantity) then
+        print("Error: Failed to deposit crafted item into chest!")
+        return false
+    end
     -- Return to first chest
     if not returnToFirstChest() then
         print("Error: Failed to return to insulated copper chest!")
@@ -78,8 +98,7 @@ function craft()
 end
 
 -- Check pre-condition
-local success, data = turtle.inspect()
-if (not success) or (data.name ~= "minecraft:chest") then
+if not checkChest() then
     print("Error: Place turtle in front of left-most chest facing it.")
     return
 end
