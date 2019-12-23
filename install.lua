@@ -1,8 +1,8 @@
 local scripts = {
     "mine",
-    "rubber"
-}
-
+    "rubber",
+    "fill"
+} 
 local libs = {
     "dig",
     "inventory",
