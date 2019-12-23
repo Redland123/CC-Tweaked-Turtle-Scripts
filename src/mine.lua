@@ -2,7 +2,10 @@
 
 local Location = require("lib.Location")
 local Set = require("lib.Set")
-local concat = require("lib.utils").concat
+local utils = require("lib.utils")
+local movement = require("lib.movement")
+local dig = require("lib.dig")
+local inventory = require("lib.inventory")
 
 -- Static Variables
 
@@ -16,14 +19,14 @@ local filler = Set({
 	"projectred-exploration:stone"
 })
 
-local trash = concat(Set({
+local trash = utils.concat(Set({
 	"minecraft:gravel",
 	"minecraft:stonebrick",
 	"minecraft:end_bricks",
 	"minecraft:mycelium"
 }), filler)
 
-local badblocks = concat(Set({
+local badblocks = utils.concat(Set({
 	"minecraft:bedrock",
 	torchID,
 	"minecraft:lava",
@@ -84,19 +87,8 @@ function getFuel()
 	end
 end
 
-function dropAll()
-	for i = 1, 16 do
-		local target = turtle.getItemDetail(i)
-		if (target) and (isValuable(target.name))then
-			turtle.select(i)
-			turtle.drop()
-		end
-	end
-	return true
-end
-
 function moveToChest()
-	--Prevents the bot from running wild
+	-- Prevents the bot from running wild
 	if direction == "left" then
 		turtle.turnRight()
 	else
@@ -104,20 +96,27 @@ function moveToChest()
 	end
 	
 	for i = 1, mainSteps do
-		digForward(true)
+		dig.forward(true)
 	end
 	
-	--Drops all the items if the chest is found
+	-- Drops all the items if the chest is found
 	local check, data = turtle.inspect()
 	if (data.name == "minecraft:chest") then
-		dropAll()
+		-- Unload valuable items into chest
+		for i = 1, 16 do
+			local target = turtle.getItemDetail(i)
+			if (target) and (isValuable(target.name))then
+				turtle.select(i)
+				turtle.drop()
+			end
+		end
 	end
 	
-	--Returnes to the origin if there is more to do
+	-- Returns to the origin if there is more to do
 	if (tunnleCount > 0) then
-		turnAround()
+		movement.turnAround()
 		for i = 1, mainSteps do
-			digForward(true)
+			dig.forward(true)
 		end
 		if direction == "left" then
 			turtle.turnRight()
@@ -133,76 +132,13 @@ function isValuable(blockName)
 	return not badblocks[blockName]
 end
 
-function turnAround()
-	turtle.turnLeft()
-	turtle.turnLeft()
-end
-
-function digForward(attack)
-	if turtle.forward() then
-		return true
-	end
-	while turtle.dig() do
-		if turtle.forward() then
-			return true
-		end
-	end
-	if attack then
-		turtle.attack()
-		return digForward(attack)
-	end
-	return false
-end
-
-function digBack(attack)
-	if turtle.back() then
-		return true
-	end
-	turnAround()
-	local success = digForward(attack)
-	turnAround()
-	return success
-end
-
-function digUp(attack)
-	if turtle.up() then
-		return true
-	end
-	while turtle.digUp() do
-		if turtle.up() then
-			return true
-		end
-	end
-	if attack then
-		turtle.attackUp()
-		return digUp(attack)
-	end
-	return false
-end
-
-function digDown(attack)
-	if turtle.down() then
-		return true
-	end
-	while turtle.digDown() do
-		if turtle.down() then
-			return true
-		end
-	end
-	if attack then
-		turtle.attackDown()
-		return digDown(attack)
-	end
-	return false
-end
-
 function processValuablesForward(relativeLocation)
 	local success, data = turtle.inspect()
 	-- Check block, dig block and move forward
-	if success and isValuable(data.name) and digForward() then
+	if success and isValuable(data.name) and dig.forward() then
 		relativeLocation:move(1)
 		processValuables(true, relativeLocation)
-		digBack(true)
+		dig.back(true)
 		relativeLocation:move(-1)
 	end
 end
@@ -217,10 +153,10 @@ function processValuables(forward, relativeLocation)
 	end
 	-- Process up block
 	local successUp, dataUp = turtle.inspectUp()
-	if successUp and isValuable(dataUp.name) and digUp() then
+	if successUp and isValuable(dataUp.name) and dig.up() then
 		relativeLocation.y = relativeLocation.y + 1
 		processValuables(true, relativeLocation)
-		digDown(true)
+		dig.down(true)
 		relativeLocation.y = relativeLocation.y - 1
 	end
 	-- Turn left and process left block
@@ -241,10 +177,10 @@ function processValuables(forward, relativeLocation)
 	relativeLocation:turnLeft()
 	-- Process down block
 	local successDown, dataDown = turtle.inspectDown()
-	if successDown and isValuable(dataDown.name) and digDown() then
+	if successDown and isValuable(dataDown.name) and dig.down() then
 		relativeLocation.y = relativeLocation.y - 1
 		processValuables(true, relativeLocation)
-		digUp(true)
+		dig.up(true)
 		relativeLocation.y = relativeLocation.y + 1
 	end
 end
@@ -264,47 +200,6 @@ function selectFiller()
 	return false
 end
 
-function selectTorch()
-	for i = 1, 16 do
-		local detail = turtle.getItemDetail(i)
-		if detail and (detail.name == torchID) then
-			turtle.select(i)
-			return true
-		end
-	end
-	return false
-end
-
-function getTorchCount()
-	local count = 0
-	for i = 1, 16 do
-		local detail = turtle.getItemDetail(i)
-		if detail and (detail.name == torchID) then
-			count = count + detail.count
-		end
-	end
-	return count
-end
-
-function compactInventory()
-	local oldSlot = turtle.getSelectedSlot()
-	for source = 2, 16 do
-		local sourceDetail = turtle.getItemDetail(source)
-		if sourceDetail then
-			for target = 1, source - 1 do
-				local targetDetail = turtle.getItemDetail(target)
-				if targetDetail and (sourceDetail.name == targetDetail.name) and (targetDetail.count < 64) then
-					turtle.select(source)
-					turtle.transferTo(target)
-				end
-			end
-		end
-	end
-	if turtle.getSelectedSlot() ~= oldSlot then
-		turtle.select(oldSlot)
-	end
-end
-
 function removeTrash()
 	local oldSlot = turtle.getSelectedSlot()
 	for i = 2, 14 do
@@ -321,7 +216,7 @@ end
 
 -- Dynamic Variables
 
-local torchesgot = getTorchCount()
+local torchesgot = inventory.countID(torchID)
 
 -- Welcome messages
 
@@ -340,7 +235,7 @@ if useTorches and torchesgot < torchesneeded then
 	print("Please insert required torches...")
 	repeat
 		sleep(0.5)
-		torchesgot = getTorchCount()
+		torchesgot = inventory.countID(torchID)
 	until torchesgot >= torchesneeded
 end
 
@@ -351,7 +246,7 @@ print("Resources acquired. Beginning mining...")
 function digBranch()
 	-- Dig forward
 	for i = 1, steps do
-		digForward(true)
+		dig.forward(true)
 		turtle.digUp()
 		
 		processValuables(false)
@@ -362,15 +257,15 @@ function digBranch()
 		end
 		
 		removeTrash()
-		compactInventory()
+		inventory.compact()
 		
 		if useTorches then
 			torch = torch + 1
 			if torch == 14 then
-				turnAround()
-				selectTorch()
+				movement.turnAround()
+				inventory.selectID(torchID)
 				turtle.place()
-				turnAround()
+				movement.turnAround()
 				turtle.select(1)
 				torch = 1
 			end
@@ -378,12 +273,12 @@ function digBranch()
 	end
 	
 	-- Return to origin
-	digUp(true)
+	dig.up(true)
 	for i = 1, steps do
 		processValuables(false)
-		digBack(true)
+		dig.back(true)
 	end
-	digDown(true)
+	dig.down(true)
 	
 	tunnleCount = tunnleCount - 1
 	
@@ -401,12 +296,12 @@ while (tunnleCount > 0) do
 	end
 	for i = 1, 3 do -- leave 2 rows between each branch
 		--Incement mainSteps for returning to chest
-		if digForward() then
+		if dig.forward() then
 			mainSteps = mainSteps + 1
 		end
-		digUp(true)
+		dig.up(true)
 		turtle.digUp()
-		digDown(true)
+		dig.down(true)
 	end
 	if direction == "left" then
 		turtle.turnRight()
