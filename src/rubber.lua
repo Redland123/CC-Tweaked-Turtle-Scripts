@@ -4,7 +4,6 @@ local fuelNeeded = 2000
 
 -- Imports
 
-require("lib.init")
 local Set = require("lib.Set")
 local dig = require("lib.dig")
 
