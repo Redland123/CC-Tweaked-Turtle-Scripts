@@ -71,8 +71,8 @@ end
 
 function getFuel()
 	print("Please insert more fuel into slot 16")
-	local oldSelction = 1;
-	if (turtle.getSelectedSlot ~= 1) then
+	local oldSelection = 1;
+	if (turtle.getSelectedSlot() ~= 1) then
 		local oldSlection = turtle.getSelectedSlot()
 	end
 	repeat
@@ -82,8 +82,8 @@ function getFuel()
 		turtle.drop()
 	until (turtle.fuelLevel() >= (minFuel + fuelNeeded))
 	
-	if (oldSelction ~= turtle.getSelectedSlot()) then
-		turtle.select(oldSelction)
+	if (oldSelection ~= turtle.getSelectedSlot()) then
+		turtle.select(oldSelection)
 	end
 end
 
