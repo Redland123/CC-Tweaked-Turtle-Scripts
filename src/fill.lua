@@ -26,15 +26,14 @@ function placeLine()
             print("Error, no blocks found. ")
 
             --loops findblock till a block is provided
-            while findBlock ~= true do
+            while findBlock() ~= true do
                 sleep(1)
             end
         end
 
         --Attemps to place the currently selected block under the turtle
-        turtle.placeDown()
-
         turtle.forward()
+        turtle.placeDown()
     end
 end
 
@@ -56,7 +55,7 @@ end
 function main()
     local side = 0
 
-        for i = 0, diameter do
+        for i = 1, diameter do
             placeLine()
 
             if side == 0 then side = 1
