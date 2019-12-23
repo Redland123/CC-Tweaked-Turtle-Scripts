@@ -5,13 +5,13 @@ local fuelNeeded = 2000
 -- Imports
 
 local Set = require("lib.Set")
-local concat = require("lib.utils").concat
+local dig = require("lib.dig")
 
 -- Static Variables
 
-local filler = Set({ "IC2:blockRubSapling" })
+local saplingID = "IC2:blockRubSapling"
 
-local badblocks = concat(Set({                                      
+local badblocks = Set({                                      
 	"minecraft:flowing_lava",
 	"ThermalFoundation:FluidRedstone",
 	"minecraft:water",
@@ -19,121 +19,34 @@ local badblocks = concat(Set({
 	"minecraft:redstone_wire",
 	"minecraft:powered_repeater",
 	"minecraft:dirt",
-	"minecraft:grass)",
+	"minecraft:grass",
 	"minecraft:cobblestone",
 	"minecraft:stone",
 	"minecraft:redstone_torch",
-}), filler)
+	saplingID
+})
 
 -- Functions
-
-function checkFuel()
-	if (turtle.getFuelLevel() <= minFuel) then
-		getFuel()
-	end
-	return
-end
-
-function getFuel()
-	print("Please insert more fuel into slot 16")
-	local oldSelction = 1;
-	if (turtle.getSelectedSlot ~= 1) then
-		local oldSlection = turtle.getSelectedSlot()
-	end
-	repeat
-		sleep(1)
-		turtle.select(16)
-		turtle.refuel()
-		turtle.drop()
-	until (turtle.fuelLevel() >= (minFuel + fuelNeeded))
-	
-	if (oldSelction ~= turtle.getSelectedSlot()) then
-		turtle.select(oldSelction)
-	end
-end
 
 function isValuable(blockName)
 	return not badblocks[blockName]
 end
 
-function turnAround()
-	turtle.turnLeft()
-	turtle.turnLeft()
-end
-
-function digForward(attack)
-	if turtle.forward() then
-		return true
-	end
-	while turtle.dig() do
-		if turtle.forward() then
-			return true
-		end
-	end
-	if attack then
-		turtle.attack()
-		return digForward(attack)
-	end
-	return false
-end
-
-function digBack(attack)
-	if turtle.back() then
-		return true
-	end
-	turnAround()
-	local success = digForward(attack)
-	turnAround()
-	return success
-end
-
-function digUp(attack)
-	if turtle.up() then
-		return true
-	end
-	while turtle.digUp() do
-		if turtle.up() then
-			return true
-		end
-	end
-	if attack then
-		turtle.attackUp()
-		return digUp(attack)
-	end
-	return false
-end
-
-function digDown(attack)
-	if turtle.down() then
-		return true
-	end
-	while turtle.digDown() do
-		if turtle.down() then
-			return true
-		end
-	end
-	if attack then
-		turtle.attackDown()
-		return digDown(attack)
-	end
-	return false
-end
-
 function processValuablesForward()
 	local success, data = turtle.inspect()
 	-- Check block, dig block and move forward
-	if success and isValuable(data.name) and digForward() then
+	if success and isValuable(data.name) and dig.forward() then
 		processValuables(true)
-		digBack(true)
+		dig.back(true)
 	end
 end
 
 function processValuables(forward)
 	-- Process up block
 	local successUp, dataUp = turtle.inspectUp()
-	if successUp and isValuable(dataUp.name) and digUp() then
+	if successUp and isValuable(dataUp.name) and dig.up() then
 		processValuables(true)
-		digDown(true)
+		dig.down(true)
 	end
 	-- Turn left and process left block
 	turtle.turnLeft()
@@ -149,41 +62,22 @@ function processValuables(forward)
 	turtle.turnLeft()
 	-- Process down block
 	local successDown, dataDown = turtle.inspectDown()
-	if successDown and isValuable(dataDown.name) and digDown() then
+	if successDown and isValuable(dataDown.name) and dig.down() then
 		processValuables(true)
-		digUp(true)
+		dig.up(true)
+		turtle.select(1)
+		turtle.placeDown()
 	end
-end
-
-function selectSapling()
-	local currentDetail = turtle.getItemDetail()
-	if currentDetail and filler[currentDetail.name] then
-		return true
-	end
-	for i = 1, 16 do
-		local data = turtle.getItemDetail(i)
-		if data and filler[data.name] then
-			turtle.select(i)
-			return true
-		end
-	end
-	return false
 end
 
 function checkRedStone()
 	local success, data = turtle.inspectDown()
-	if success then
-		if data.metadata > 0 then 
-			return true
-		else 
-			return false
-		end
-	end
+	return success and data.metadata > 0
 end
 
 --Move to tree
 function treeMove()
-	if (turtle.forward()) then
+	if turtle.forward() then
 		treeMove()
 		turtle.back()
 	else
@@ -191,31 +85,27 @@ function treeMove()
 	end
 end
 
-function startTreeMove(direction)
-	if (direction == "right") then
+function startTreeMove(direction)	
+	if direction == 0 then
 		turtle.turnLeft()
-	else 
+	elseif direction == 1 then
 		turtle.turnRight()
 	end
 	
 	treeMove()
 	
-	if (direction == "left") then
-		turtle.turnLeft()
-	else 
+	if direction == 0 then
 		turtle.turnRight()
+	elseif direction == 1 then
+		turtle.turnLeft()
 	end
-	
 end
 
---Keep moving till a wall or the redstone is found
+-- Keep moving till a wall or the redstone is found
 function travelRight()
-	if (checkRedStone()) then
-		startTreeMove("right")
-		return
-	end
-	
-	if (turtle.forward()) then
+	if checkRedStone() then
+		startTreeMove(0)
+	elseif (turtle.forward()) then
 		travelRight()
 		turtle.back()
 	end
@@ -223,17 +113,18 @@ end
 
 function startRight()
 	turtle.forward()
+	turtle.forward()
 	turtle.turnRight()
 	travelRight()
 	turtle.turnLeft()
+	turtle.back()
 	turtle.back()
 end
 
 function travelLeft()
 	if (checkRedStone()) then
-		startTreeMove("left")
+		startTreeMove(1)
 	end
-	
 	if (turtle.forward()) then
 		travelLeft()
 		turtle.back()
@@ -241,23 +132,27 @@ function travelLeft()
 end
 
 function startLeft()
+	turtle.forward()
+	turtle.forward()
 	turtle.turnLeft()
 	travelLeft()
 	turtle.turnRight()
+	turtle.back()
+	turtle.back()
 end
 
 -- Begin Digging
 
 function main()
-	local redStoneState = checkRedStone()
-
-	--Waits for a tree to grow
-	while (redStoneState == false) do
+	-- Waits for a tree to grow
+	while not checkRedStone() do
 		sleep(5)
-		redStoneState = checkRedStone()
 	end
 
 	startRight()
+	startLeft()
+	
+	main()
 end
 
 main()
