@@ -45,6 +45,18 @@ function nextChest()
 end
 
 function returnToFirstChest()
+    turtle.turnLeft()
+    for i = 1, 6 do
+        if not turtle.forward() then
+            return false
+        end
+    end
+    turtle.turnRight()
+    -- Verify chest in front of turtle
+    if checkChest() then
+        return true
+    end
+    print("No chest found!")
     return false
 end
 
