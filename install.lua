@@ -1,4 +1,5 @@
 local scripts = {
+    "blockID",
     "craftbat",
     "fill",
     "itemID",

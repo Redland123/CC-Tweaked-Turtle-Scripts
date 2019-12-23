@@ -13,7 +13,7 @@ end
 function craft()
     -- Assumes turtle is in front of left-most chest
     -- Take 1 insulated copper cable
-    if not extractItem(1, "", {2}, "Out of insulated copper cable!", "No insulated copper cable in first chest!") then
+    if not extractItem(1, "ic2:cable", {2}, "Out of insulated copper cable!", "No insulated copper cable in first chest!") then
         return false
     end
     -- Move to redstone chest
