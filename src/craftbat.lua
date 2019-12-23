@@ -120,5 +120,6 @@ while (totalQuantity == nil) or (itemsCrafted < totalQuantity) do
     if not craft() then
         return
     end
+    itemsCrafted = itemsCrafted + 1
 end
 print("Successfully crafted " .. itemsCrafted .. " items!")
