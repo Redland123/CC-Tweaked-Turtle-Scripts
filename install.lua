@@ -19,8 +19,7 @@ function downloadLua(url, path)
         path = url
     end
     shell.run("delete", path)
-    shell.run("delete", path .. ".lua")
-    shell.run("wget", urlPrefix .. url .. ".lua", path .. ".lua")
+    shell.run("wget", urlPrefix .. url .. ".lua", path)
 end
 
 if not download then
