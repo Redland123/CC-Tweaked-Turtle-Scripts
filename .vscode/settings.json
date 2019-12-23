@@ -1,0 +1,9 @@
+{
+    "Lua.diagnostics.globals": [
+        "turtle",
+        "sleep"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ]
+}
