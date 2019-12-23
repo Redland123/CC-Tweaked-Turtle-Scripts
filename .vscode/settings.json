@@ -2,7 +2,9 @@
     "Lua.diagnostics.globals": [
         "turtle",
         "sleep",
-        "shell"
+        "shell",
+        "fs",
+        "http"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
