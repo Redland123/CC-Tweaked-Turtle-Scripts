@@ -1,3 +1,6 @@
+local targs = { ... }
+local totalQuantity = tonumber(targs[1]) or nil
+
 function extractItem(quantity, itemID, subID, slots, outOfMessage, incorrectMessage)
     for _, slot in ipairs(slots) do
         -- Suck item from chest into slot
@@ -26,12 +29,11 @@ function extractItem(quantity, itemID, subID, slots, outOfMessage, incorrectMess
 end
 
 function nextChest()
-
-    return false
+    return turtle.turnRight() and turtle.forward() and turtle.forward() and turtle.turnLeft()
 end
 
 function returnToFirstChest()
-
+    
     return false
 end
 
