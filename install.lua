@@ -14,10 +14,13 @@ local args = { ... }
 local download = args[1] == "download"
 local urlPrefix = "https://raw.githubusercontent.com/BTOdell/computercraft-turtle-scripts/master/"
 
-function downloadLua(path)
+function downloadLua(url, path)
+    if not path then
+        path = url
+    end
     shell.run("delete", path)
     shell.run("delete", path .. ".lua")
-    shell.run("wget", urlPrefix .. path .. ".lua", path .. ".lua")
+    shell.run("wget", urlPrefix .. url .. ".lua", path .. ".lua")
 end
 
 if not download then
@@ -28,9 +31,10 @@ if not download then
 else
     -- Download all scripts and libs from repo
     for _, script in ipairs(scripts) do
-        downloadLua(script)
+        downloadLua("src/" .. script, script)
     end
     for _, lib in ipairs(libs) do
-        downloadLua("lib/" .. lib)
+        local libPath = "lib/" .. lib
+        downloadLua("src/" .. libPath, libPath)
     end
 end
