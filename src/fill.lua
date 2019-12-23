@@ -26,7 +26,7 @@ function placeLine()
             print("Error, no blocks found. ")
 
             --loops findblock till a block is provided
-            while findBlock() ~= true do
+            while not findBlock() do
                 sleep(1)
             end
         end
@@ -48,8 +48,6 @@ function moveNext(side)
         turtle.forward()
         turtle.turnLeft()
     end
-
-    turtle.forward()
 end
 
 function main()
