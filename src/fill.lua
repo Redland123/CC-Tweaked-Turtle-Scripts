@@ -12,15 +12,24 @@ function findBlock()
         if turtle.getItemDetail(i) then
             if turtle.getSelectedSlot ~= i then
                 turtle.select(i)
+                return true
             end
         end
     end
+    return false
 end
 
 function placeLine()
     for i = 1, diameter do
         --Find the first block in the inventory
-        findBlock()
+        if findBlock() ~= true then
+            print("Error, no blocks found. ")
+
+            --loops findblock till a block is provided
+            while findBlock ~= true do
+                sleep(1)
+            end
+        end
 
         --Attemps to place the currently selected block under the turtle
         turtle.placeDown()
@@ -48,12 +57,13 @@ function main()
     --Moves the bot forward to start
     turtle.forward()
 
-        for i = 1, diameter do
+        for i = 0, diameter do
             placeLine()
-            moveNext(side)
 
-            if side == 1 then side = 0
-            else side = 1 end
+            if side == 0 then side = 1
+            else side = 0 end
+
+            moveNext(side)
         end             
 end
 
