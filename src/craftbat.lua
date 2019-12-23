@@ -115,5 +115,10 @@ if not checkChest() then
     return
 end
 
-craft()
---while craft() do end
+local itemsCrafted = 0
+while (totalQuantity == nil) or (itemsCrafted < totalQuantity) do
+    if not craft() then
+        return
+    end
+end
+print("Successfully crafted " .. itemsCrafted .. " items!")
