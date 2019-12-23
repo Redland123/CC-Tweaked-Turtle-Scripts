@@ -4,6 +4,7 @@ local scripts = {
 }
 
 local libs = {
+    "init",
     "dig",
     "inventory",
     "Location",
