@@ -15,6 +15,8 @@ local download = args[1] == "download"
 local urlPrefix = "https://raw.githubusercontent.com/BTOdell/computercraft-turtle-scripts/master/"
 
 function downloadLua(path)
+    shell.run("delete", path)
+    shell.run("delete", path .. ".lua")
     shell.run("wget", urlPrefix .. path .. ".lua", path .. ".lua")
 end
 
