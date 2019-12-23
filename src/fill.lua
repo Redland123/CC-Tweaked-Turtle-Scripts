@@ -21,6 +21,7 @@ function placeLine()
     for i = 1, diameter do
         --Find the first block in the inventory
         findBlock()
+
         --Attemps to place the currently selected block under the turtle
         turtle.placeDown()
 
@@ -43,9 +44,16 @@ end
 
 function main()
     local side = 0
+
+    --Moves the bot forward to start
+    turtle.forward()
+
         for i = 1, diameter do
             placeLine()
-            moveNext()
+            moveNext(side)
+
+            if side == 1 then side = 0
+            else side = 1 end
         end             
 end
 
