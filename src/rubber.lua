@@ -2,21 +2,10 @@
 local minFuel = 2000
 local fuelNeeded = 2000
 
--- Pre-functions
-function Set (list)
-	local set = {}
-	for _, l in ipairs(list) do
-		set[l] = true
-	end
-	return set
-end
+-- Imports
 
-function concat(consumer, supplier)
-	for k, v in pairs(supplier) do
-		consumer[k] = v
-	end
-	return consumer
-end
+local Set = require("lib.Set")
+local concat = require("lib.utils").concat
 
 -- Static Variables
 
