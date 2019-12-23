@@ -32,9 +32,8 @@ function placeLine()
         end
 
         --Attemps to place the currently selected block under the turtle
-        turtle.placeDown()
-
         turtle.forward()
+        turtle.placeDown()
     end
 end
 
