@@ -58,7 +58,7 @@ function craft()
         return false
     end
     -- Deposit crafted item
-    if not turtle.drop(quantity) then
+    if not turtle.drop(quantity * 6) then
         print("Error: Failed to deposit crafted item into chest!")
         return false
     end
