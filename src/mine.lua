@@ -11,6 +11,11 @@ local inventory = require("lib.inventory")
 
 local torchID = "minecraft:torch"
 
+local chests = Set({
+	"minecraft:chest",
+	"enderstorage:ender_storage"
+})
+
 local filler = Set({
 	"minecraft:dirt",
 	"minecraft:grass",
@@ -26,11 +31,11 @@ local trash = utils.concat(Set({
 	"minecraft:mycelium"
 }), filler)
 
-local badblocks = utils.concat(Set({
+local badblocks = utils.concat(utils.concat(Set({
 	"minecraft:bedrock",
 	torchID,
 	"minecraft:lava",
-	"minecraft:stone_stairs",                                            
+	"minecraft:stone_stairs",
 	"minecraft:flowing_lava",
 	"thermalfoundation:fluid_redstone",
 	"buildcraftenergy:fluid_block_oil_heat_0",
@@ -38,7 +43,7 @@ local badblocks = utils.concat(Set({
 	"buildcraftenergy:fluid_block_oil_heat_2",
 	"minecraft:water",
 	"minecraft:flowing_water"
-}), trash)
+}), trash), chests)
 
 local torch = 0
 local targs = { ... }
@@ -101,7 +106,7 @@ function moveToChest()
 	
 	-- Drops all the items if the chest is found
 	local check, data = turtle.inspect()
-	if (data.name == "minecraft:chest") then
+	if check and chests[data.name] then
 		-- Unload valuable items into chest
 		for i = 1, 16 do
 			local target = turtle.getItemDetail(i)
