@@ -14,9 +14,9 @@ function nextChest()
     return false
 end
 
-function returnToFirstChest()
+function returnToFirstChest(numOfSupplyChests)
     turtle.turnLeft()
-    for i = 1, 6 do
+    for i = 1, (numOfSupplyChests * 2) do
         if not turtle.forward() then
             return false
         end
@@ -72,7 +72,7 @@ function craft()
         return false
     end
     -- Return to first chest
-    if not returnToFirstChest() then
+    if not returnToFirstChest(3) then
         print("Error: Failed to return to insulated copper chest!")
         return false
     end
