@@ -9,8 +9,6 @@ local dig = require("lib.dig")
 
 -- Static Variables
 
-local saplingID = "IC2:blockRubSapling"
-
 local badblocks = Set({                                      
 	"minecraft:flowing_lava",
 	"ThermalFoundation:FluidRedstone",
@@ -23,7 +21,8 @@ local badblocks = Set({
 	"minecraft:cobblestone",
 	"minecraft:stone",
 	"minecraft:redstone_torch",
-	saplingID
+	"IC2:blockRubSapling",
+	"minecraft:sapling"
 })
 
 -- Functions
