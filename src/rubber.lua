@@ -172,7 +172,10 @@ function main()
 			turtle.select(i)
 			turtle.drop()
 		end
-	end
+	end 
+
+	--Turns back around
+	movement.turnAround()
 
 	--Sets sapling spot back to the first slot
 	turtle.select(1)
