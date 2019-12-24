@@ -6,6 +6,7 @@ local fuelNeeded = 2000
 
 local Set = require("lib.Set")
 local dig = require("lib.dig")
+local movement = require("lib.movement")
 
 -- Static Variables
 
@@ -43,6 +44,9 @@ function processValuablesForward()
 	-- Check block, dig block and move forward
 	if success and isValuable(data.name) and dig.forward() then
 		processValuables(true)
+
+		trySapling()
+
 		dig.back(true)
 	end
 end
@@ -159,6 +163,9 @@ function main()
 	startRight()
 	startLeft()
 
+	--turns the bot around to place items in the chest
+	movement.turnAround()
+
 	for i = 2, 16 do
 		local target = turtle.getItemDetail(i)
 		if (target) then
@@ -166,6 +173,9 @@ function main()
 			turtle.drop()
 		end
 	end
+
+	--Sets sapling spot back to the first slot
+	turtle.select(1)
 	
 	main()
 end
