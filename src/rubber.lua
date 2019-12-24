@@ -180,4 +180,6 @@ function main()
 	main()
 end
 
+turtle.select(1)
+
 main()
