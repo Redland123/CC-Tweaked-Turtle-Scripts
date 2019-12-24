@@ -27,11 +27,18 @@ local badblocks = Set({
 
 -- Functions
 
+function trySapling()
+		--Attempts to place
+		turtle.placeDown()
+end
+
 function isValuable(blockName)
 	return not badblocks[blockName]
 end
 
 function processValuablesForward()
+	trySapling()
+
 	local success, data = turtle.inspect()
 	-- Check block, dig block and move forward
 	if success and isValuable(data.name) and dig.forward() then
@@ -41,6 +48,8 @@ function processValuablesForward()
 end
 
 function processValuables(forward)
+	trySapling()
+
 	-- Process up block
 	local successUp, dataUp = turtle.inspectUp()
 	if successUp and isValuable(dataUp.name) and dig.up() then
@@ -59,13 +68,12 @@ function processValuables(forward)
 	turtle.turnRight()
 	processValuablesForward()
 	turtle.turnLeft()
+
 	-- Process down block
 	local successDown, dataDown = turtle.inspectDown()
 	if successDown and isValuable(dataDown.name) and dig.down() then
 		processValuables(true)
 		dig.up(true)
-		turtle.select(1)
-		turtle.placeDown()
 	end
 end
 
