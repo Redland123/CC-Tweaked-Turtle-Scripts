@@ -150,6 +150,14 @@ function main()
 
 	startRight()
 	startLeft()
+
+	for i = 2, 16 do
+		local target = turtle.getItemDetail(i)
+		if (target) then
+			turtle.select(i)
+			turtle.drop()
+		end
+	end
 	
 	main()
 end
