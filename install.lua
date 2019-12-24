@@ -1,6 +1,7 @@
 local scripts = {
     "blockID",
     "craftbat",
+    "craftcable",
     "fill",
     "itemID",
     "mine",
@@ -8,12 +9,12 @@ local scripts = {
 }
 
 local libs = {
+    "chest",
     "dig",
     "inventory",
     "Location",
     "Set",
-    "movement",
-    "utils"
+    "movement"
 }
 
 local args = { ... }

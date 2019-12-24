@@ -2,7 +2,6 @@
 
 local Location = require("lib.Location")
 local Set = require("lib.Set")
-local utils = require("lib.utils")
 local movement = require("lib.movement")
 local dig = require("lib.dig")
 local inventory = require("lib.inventory")
@@ -24,14 +23,14 @@ local filler = Set({
 	"projectred-exploration:stone"
 })
 
-local trash = utils.concat(Set({
+local trash = Set({
 	"minecraft:gravel",
 	"minecraft:stonebrick",
 	"minecraft:end_bricks",
 	"minecraft:mycelium"
-}), filler)
+}) .. filler
 
-local badblocks = utils.concat(utils.concat(Set({
+local badblocks = Set({
 	"minecraft:bedrock",
 	torchID,
 	"minecraft:lava",
@@ -43,7 +42,7 @@ local badblocks = utils.concat(utils.concat(Set({
 	"buildcraftenergy:fluid_block_oil_heat_2",
 	"minecraft:water",
 	"minecraft:flowing_water"
-}), trash), chests)
+}) .. trash .. chests
 
 local torch = 0
 local targs = { ... }
