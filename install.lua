@@ -2,6 +2,7 @@ local scripts = {
     "blockID",
     "craftbat",
     "craftcable",
+    "craftcircuit",
     "fill",
     "itemID",
     "mine",
