@@ -1,7 +1,8 @@
 local chest = require("lib.chest")
 
 local targs = { ... }
-local totalQuantity = tonumber(targs[1]) or nil
+local each = tonumber(targs[1]) or 1
+local totalQuantity = tonumber(targs[2]) or nil
 
 function nextChest()
     if turtle.turnRight() and turtle.forward() and turtle.forward() and turtle.turnLeft() then
@@ -31,10 +32,9 @@ function returnToFirstChest(numOfSupplyChests)
 end
 
 function craft()
-    local quantity = 1
     -- Assumes turtle is in front of left-most chest
     -- Take 6 insulated copper cable
-    if not chest.extract(quantity, "ic2:cable", 0, {1, 2, 3, 9, 10, 11}, "Out of insulated copper cable!", "No insulated copper cable in first chest!") then
+    if not chest.extract(each, "ic2:cable", 0, {1, 2, 3, 9, 10, 11}, "Out of insulated copper cable!", "No insulated copper cable in first chest!") then
         return false
     end
     -- Move to redstone chest
@@ -43,7 +43,7 @@ function craft()
         return false
     end
     -- Take 2 redstone
-    if not chest.extract(quantity, "minecraft:redstone", nil, {5, 7}, "Out of redstone!", "No redstone in second chest!") then
+    if not chest.extract(each, "minecraft:redstone", nil, {5, 7}, "Out of redstone!", "No redstone in second chest!") then
         return false
     end
     -- Move to refined iron nextChest
@@ -52,7 +52,7 @@ function craft()
         return false
     end
     -- Take 1 refined iron
-    if not chest.extract(quantity, "ic2:ingot", 7, {6}, "Out of refined iron!", "No refined iron in last chest!") then
+    if not chest.extract(each, "ic2:ingot", 7, {6}, "Out of refined iron!", "No refined iron in last chest!") then
         return false
     end
     -- Move to deposit chest
@@ -62,12 +62,12 @@ function craft()
     end
     -- Craft item
     turtle.select(1)
-    if not turtle.craft(quantity) then
+    if not turtle.craft(each) then
         print("Error: Failed to craft item!")
         return false
     end
     -- Deposit crafted item
-    if not turtle.drop(quantity) then
+    if not turtle.drop(each) then
         print("Error: Failed to deposit crafted item into chest!")
         return false
     end
