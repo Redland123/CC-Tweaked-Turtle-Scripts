@@ -40,6 +40,7 @@ local badblocks = Set({
 	"buildcraftenergy:fluid_block_oil_heat_0",
 	"buildcraftenergy:fluid_block_oil_heat_1",
 	"buildcraftenergy:fluid_block_oil_heat_2",
+	"thermalfoundation:fluid_crude_oil",
 	"minecraft:water",
 	"minecraft:flowing_water"
 }) .. trash .. chests
