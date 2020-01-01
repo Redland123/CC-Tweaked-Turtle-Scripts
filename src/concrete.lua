@@ -6,7 +6,7 @@ function main()
     while 1 == 1 do
         turtle.place()
         local success, data = turtle.inspect()
-        if success and data == "minecraft:concrete_powder" then
+        if success and data == "minecraft:concrete" then
             turtle.dig()
         end
     end
