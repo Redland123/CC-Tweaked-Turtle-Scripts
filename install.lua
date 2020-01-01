@@ -7,7 +7,8 @@ local scripts = {
     "itemID",
     "mine",
     "rubber",
-    "concrete"
+    "concrete",
+    "refuel"
 }
 
 local libs = {
