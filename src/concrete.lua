@@ -1,15 +1,9 @@
-function main()
-    if turtle.getSelectedSlot ~= 1 then
-        turtle.select(1)
-    end
+local inventory = require("lib.inventory")
+local blockID = "minecraft:concrete_powder"
 
-    while 1 == 1 do
-        turtle.place()
-        local success, data = turtle.inspect()
-        if success and data == "minecraft:concrete" then
-            turtle.dig()
-        end
+while inventory.selectID(blockID) and turtle.place() do
+    local success, data = turtle.inspect()
+    if success and data.name ~= blockID then
+        turtle.dig()
     end
 end
-
-main()
