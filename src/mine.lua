@@ -253,6 +253,9 @@ function digBranch()
 	for i = 1, steps do
 		dig.forward(true)
 		turtle.digUp()
+
+		--Allows for the user to check the fuel level of the turtle while mine is active
+		print("Fuel level: " .. ((turtle.getFuelLevel()/turtle.getFuelLimit()) * 100) .. " %")
 		
 		processValuables(false)
 		
