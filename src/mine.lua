@@ -50,9 +50,9 @@ local targs = { ... }
 local steps = tonumber(targs[1]) or 1
 local mainSteps = 0
 local torchesneeded = (steps > 14) and (steps / 14) or 0
-local minFuel = 2000
+local minFuel = 10000
 local maxDistance = 5
-local fuelNeeded = 2000
+local fuelNeeded = 5000
 local tunnleCount = tonumber(targs[2])
 
 local direction = nil
@@ -85,7 +85,7 @@ function getFuel()
 		turtle.select(16)
 		turtle.refuel()
 		turtle.drop()
-	until (turtle.fuelLevel() >= (minFuel + fuelNeeded))
+	until (turtle.getfuelLevel() >= (minFuel + fuelNeeded))
 	
 	if (oldSelection ~= turtle.getSelectedSlot()) then
 		turtle.select(oldSelection)
@@ -116,6 +116,8 @@ function moveToChest()
 			end
 		end
 	end
+
+	checkFuel()
 	
 	-- Returns to the origin if there is more to do
 	if (tunnleCount > 0) then
@@ -291,7 +293,6 @@ function digBranch()
 	tunnleCount = tunnleCount - 1
 	
 	moveToChest()
-	checkFuel()
 end
 
 digBranch()
