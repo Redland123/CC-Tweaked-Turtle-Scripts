@@ -1,6 +1,6 @@
 local maxFuel = turtle.getFuelLimit()
 local currentFuel = 0
-local percentage = 0
+local percentage = ((turtle.getFuelLevel()/maxFuel) * 100)
 
 while percentage <= 100 do
     print("Fuel level: " .. percentage .. " %")
