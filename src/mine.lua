@@ -20,6 +20,7 @@ local filler = Set({
 	"minecraft:grass",
 	"minecraft:cobblestone",
 	"minecraft:stone",
+	"minecraft:netherrack",
 	"projectred-exploration:stone"
 })
 
