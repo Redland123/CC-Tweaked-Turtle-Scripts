@@ -7,8 +7,16 @@ function Set.is(s)
 end
 
 function instanceMetatable.__concat(leftSet, rightSet)
-	for k, _ in pairs(rightSet) do
-		leftSet[k] = true
+	local largest = 0
+	-- Iterate over leftSet to find largest index
+	for _, i in pairs(leftSet) do
+		if i > largest then
+			largest = i
+		end
+	end
+	-- Copy keys from rightSet and offset by the largest in the leftSet
+	for k, i in pairs(rightSet) do
+		leftSet[k] = i + largest
 	end
 	return leftSet
 end
@@ -35,12 +43,12 @@ local staticMetatable = {}
 function staticMetatable.__call(_, listOrSet)
 	local set = {}
 	if Set.is(listOrSet) then
-		for k, _ in pairs(listOrSet) do
-			set[k] = true
+		for k, i in pairs(listOrSet) do
+			set[k] = i
 		end
 	else
-		for _, v in ipairs(listOrSet) do
-			set[v] = true
+		for i, v in ipairs(listOrSet) do
+			set[v] = i
 		end
 	end
 	setmetatable(set, instanceMetatable)

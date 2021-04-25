@@ -19,9 +19,9 @@ local chests = Set({
 })
 
 local filler = Set({
+	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
 	"minecraft:dirt",
 	"minecraft:grass",
-	"minecraft:cobblestone",
 	"minecraft:stone",
 	"minecraft:netherrack",
 	"projectred-exploration:stone"
@@ -29,10 +29,12 @@ local filler = Set({
 
 local trash = Set({
 	"minecraft:sand",
+	"minecraft:sandstone",
 	"minecraft:gravel",
 	"minecraft:stonebrick",
 	"minecraft:end_bricks",
-	"minecraft:mycelium"
+	"minecraft:mycelium",
+	"minecraft:rotten_flesh"
 }) .. filler
 
 local badblocks = Set({
@@ -128,6 +130,7 @@ end
 
 local BLOCKS_BETWEEN_EACH_TUNNEL = 2
 local MAX_DISTANCE = 5 -- distance to search for valuables away from the tunnel
+local FUEL_SLOT = 16
 local MIN_FUEL = 10000 -- this should be calculated based on numOfTunnels and tunnelDepth
 local FUEL_NEEDED = 5000 -- this should be calculated based on numOfTunnels and tunnelDepth
 local TORCHES_NEEDED = (tunnelDepth > 14) and (tunnelDepth / 14) or 0
@@ -155,17 +158,14 @@ function checkFuel()
 end
 
 function getFuel()
-	print("Please insert more fuel into slot 16")
-	local oldSelection = 1;
-	if turtle.getSelectedSlot() ~= 1 then
-		local oldSlection = turtle.getSelectedSlot()
-	end
+	print("Please insert more fuel into slot " .. FUEL_SLOT)
+	local oldSelection = turtle.getSelectedSlot()
 	repeat
 		sleep(1)
-		turtle.select(16)
+		turtle.select(FUEL_SLOT)
 		turtle.refuel()
 		turtle.drop()
-	until turtle.getfuelLevel() >= (MIN_FUEL + FUEL_NEEDED)
+	until turtle.getFuelLevel() >= (MIN_FUEL + FUEL_NEEDED)
 
 	if oldSelection ~= turtle.getSelectedSlot() then
 		turtle.select(oldSelection)
@@ -224,7 +224,7 @@ function moveToStartingLocation()
 			actualStepsMoved = actualStepsMoved + 1
 		end
 	end
-	
+
 	return actualStepsMoved
 end
 
@@ -285,28 +285,36 @@ function processValuables(forward, relativeLocation)
 	end
 end
 
-function selectFiller()
-	local currentDetail = turtle.getItemDetail()
-	if currentDetail and filler[currentDetail.name] then
-		return true
-	end
+-- Returns the slot containing the optimal filler material,
+-- or 0 if there is no filler material in the turtle's inventory.
+function getOptimalFiller()
+	local bestPriority = 1000000
+	local bestSlot = 0
 	for i = 1, 16 do
 		local data = turtle.getItemDetail(i)
-		if data and filler[data.name] then
-			turtle.select(i)
-			return true
+		if data then
+			local priority = filler[data.name]
+			if priority and priority < bestPriority then
+				bestPriority = priority
+				bestSlot = i
+			end
 		end
 	end
-	return false
+	return bestSlot
 end
 
-function removeTrash()
+function removeTrash(fillerSlot)
+	if not fillerSlot then
+		fillerSlot = getOptimalFiller()
+	end
 	local oldSlot = turtle.getSelectedSlot()
-	for i = 2, 14 do
-		local detail = turtle.getItemDetail(i)
-		if detail and trash[detail.name] then
-			turtle.select(i)
-			turtle.drop()
+	for i = 1, 16 do
+		if i ~= fillerSlot then
+			local detail = turtle.getItemDetail(i)
+			if detail and trash[detail.name] then
+				turtle.select(i)
+				turtle.drop()
+			end
 		end
 	end
 	if turtle.getSelectedSlot() ~= oldSlot then
@@ -349,13 +357,15 @@ function digBranch()
 
 		processValuables(false)
 
-		-- Attempt to place cobblestone below turtle
-		if selectFiller() then
+		-- Attempt to place a filler block below turtle
+		local fillerSlot = getOptimalFiller()
+		if fillerSlot > 0 then
+			turtle.select(fillerSlot)
 			turtle.placeDown()
 		end
 
-		removeTrash()
 		inventory.compact()
+		removeTrash(fillerSlot)
 
 		if useTorches then
 			torch = torch + 1
@@ -364,7 +374,6 @@ function digBranch()
 					movement.turnAround()
 					turtle.place()
 					movement.turnAround()
-					turtle.select(1)
 				end
 				torch = 1
 			end
@@ -375,6 +384,10 @@ function digBranch()
 	dig.up(true)
 	for i = 1, tunnelDepth do
 		processValuables(false)
+
+		inventory.compact()
+		removeTrash()
+
 		dig.back(true)
 	end
 	dig.down(true)
@@ -391,7 +404,7 @@ function digBranch()
 		dig.forward(true)
 		dig.back(true)
 	end
-	
+
 	return turtle.place()
 end
 
