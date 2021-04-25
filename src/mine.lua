@@ -204,6 +204,7 @@ function moveToChest()
 	return true
 end
 
+-- Assumes turtle is facing down a tunnel
 function moveToStartingLocation()
 	-- Turn to face up the main mining shaft (back towards the chest)
 	if side == "left" then
@@ -472,6 +473,13 @@ until numOfTunnels <= 0
 
 -- Move back to starting location
 if not atStartingLocation then
+	-- Face back towards the tunnel to meet pre-req
+	if side == "left" then
+		turtle.turnLeft()
+	else
+		turtle.turnRight()
+	end
+	-- Now we go back to the starting location
 	moveToStartingLocation()
 end
 
