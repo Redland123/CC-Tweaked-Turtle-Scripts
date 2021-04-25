@@ -12,6 +12,7 @@ local scripts = {
 }
 
 local libs = {
+    "args",
     "chest",
     "dig",
     "inventory",
