@@ -28,6 +28,7 @@ local filler = Set({
 })
 
 local trash = Set({
+	"minecraft:sand",
 	"minecraft:gravel",
 	"minecraft:stonebrick",
 	"minecraft:end_bricks",
