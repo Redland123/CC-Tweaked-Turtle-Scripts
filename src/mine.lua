@@ -60,17 +60,17 @@ local targs = { ... }
 
 if args.count(targs) < 4 then
 	-- Print help
-	print("Arguments: mine [num-of-tunnels] [tunnel-depth] [tunnel-offset] [side=left|right] [use-torches=0|1] [use-chest]")
-	print("- num-of-tunnels: The number of tunnels to mine from the chest.")
-	print("- tunnel-depth: The number of blocks to mine from the main mining shaft.")
-	print("- tunnel-offset: The number of blocks to move forward from the starting location before mining the first tunnel.")
-	print("- side=left|right: Which side of the main mining shaft the turtle is on.")
-	print("? use-torches=0|1: Whether to use torches to light the tunnels.")
-	print("? use-chest=0|1: Whether to store items in a chest at the turtle's starting location.")
-	print("Instructions:")
-	print("- Place turtle facing down main tunnel on the side it should mine.")
-	print("- A chest should be directly behind the turtle.")
-	print("- The turtle will use " .. breadcrumbID .. " to mark each branching tunnel as complete.")
+	textutils.pagedPrint("Arguments: mine [num-of-tunnels] [tunnel-depth] [tunnel-offset] [side:left|right] [use-torches:0|1] [use-chest:0|1]")
+	textutils.pagedPrint("- num-of-tunnels: The number of tunnels to mine from the chest.")
+	textutils.pagedPrint("- tunnel-depth: The number of blocks to mine from the main mining shaft.")
+	textutils.pagedPrint("- tunnel-offset: The number of blocks to move forward from the starting location before mining the first tunnel.")
+	textutils.pagedPrint("- side: Which side of the main mining shaft the turtle is on.")
+	textutils.pagedPrint("? use-torches=false: Whether to use torches to light the tunnels.")
+	textutils.pagedPrint("? use-chest=true: Whether to store items in a chest at the turtle's starting location.")
+	textutils.pagedPrint("Instructions:")
+	textutils.pagedPrint("- Place turtle facing down main tunnel on the side it should mine.")
+	textutils.pagedPrint("- A chest should be directly behind the turtle.")
+	textutils.pagedPrint("- The turtle will use " .. breadcrumbID .. " to mark each branching tunnel as complete.")
 	return
 end
 
@@ -171,26 +171,8 @@ function getFuel()
 	end
 end
 
-function checkChest()
-	local found = false
-
-	-- Turn around
-	movement.turnAround()
-
-	-- Check for chest
-	local check, data = turtle.inspect()
-	if check and chests[data.name] then
-		found = true
-	end
-
-	-- Turn back around
-	movement.turnAround()
-
-	return found
-end
-
--- Turtle should be facing down the most recent tunnel
--- Returns whether the turtle moved back to the tunnel location
+-- Turtle should be facing down the most recent tunnel.
+-- Returns whether the turtle moved back to the tunnel location (will be facing down the main mine shaft)
 function moveToChest()
 	local actualStepsMoved = moveToStartingLocation()
 
@@ -219,12 +201,6 @@ function moveToChest()
 		dig.forward(true)
 	end
 
-	-- Face back into the tunnel
-	if side == "left" then
-		turtle.turnLeft()
-	else
-		turtle.turnRight()
-	end
 	return true
 end
 
@@ -417,11 +393,25 @@ function digBranch()
 	return turtle.place()
 end
 
--- Verify that a chest is behind the turtle
+-- Verify that a chest is next to the turtle (if useChest is enabled)
 
-if useChest and not checkChest() then
-	print("Error: Could not find a chest behind the turtle!")
-	return
+if useChest then
+	-- Attempt to find chest (could be in any direction)
+	local found = false
+	for i = 1, 4 do
+		local check, data = turtle.inspect()
+		if check and chests[data.name] then
+			found = true
+			break
+		end
+		turtle.turnLeft()
+	end
+	if not found then
+		print("Error: Could not find a chest around the turtle!")
+		return
+	end
+	-- Turn around to face away from chest
+	movement.turnAround()
 end
 
 -- Resource Acquiring
@@ -454,8 +444,22 @@ repeat
 	end
 	-- Decrement num of tunnels remaining
 	numOfTunnels = numOfTunnels - 1
+	-- Define local variable for tracking whether we are facing down the main shaft
+	local facingDownMainShaft = false
 	-- Check if tunnel has breadcrumb (this indicates tunnel has already been completed)
-	if hasBreadcrumb() then
+	if not hasBreadcrumb() then
+		-- If no breadcrumb, then dig branch tunnel
+		if not digBranch() then
+			print("Error: No " .. breadcrumbID .. " available to place breadcrumb!")
+			return
+		end
+		if useChest then
+			-- Go to chest to deposit valuables
+			atStartingLocation = not moveToChest()
+			facingDownMainShaft = true
+		end
+	end
+	if not facingDownMainShaft then
 		-- Turn to face down main mining shaft
 		if side == "left" then
 			turtle.turnRight()
@@ -463,14 +467,6 @@ repeat
 			turtle.turnLeft()
 		end
 		atStartingLocation = false
-	else
-		-- If no breadcrumb, then dig branch tunnel
-		if not digBranch() then
-			print("Error: No " .. breadcrumbID .. " available to place breadcrumb!")
-			return
-		end
-		-- Go to chest to deposit valuables
-		atStartingLocation = not moveToChest()
 	end
 until numOfTunnels <= 0
 
