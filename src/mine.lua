@@ -12,7 +12,8 @@ local torchID = "minecraft:torch"
 
 local chests = Set({
 	"minecraft:chest",
-	"enderstorage:ender_storage"
+	"enderstorage:ender_storage",
+	"ironchest:iron_chest"
 })
 
 local filler = Set({
