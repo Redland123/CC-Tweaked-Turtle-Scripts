@@ -34,6 +34,7 @@ local trash = Set({
 	"minecraft:stonebrick",
 	"minecraft:end_bricks",
 	"minecraft:mycelium",
+	"projectx:xycronium_crystal", -- handles all colors of crystals
 	"minecraft:rotten_flesh"
 }) .. filler
 
