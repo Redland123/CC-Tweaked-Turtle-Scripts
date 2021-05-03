@@ -4,7 +4,7 @@ if success then
     print("Block metadata: ", data.metadata)
     print("Block state:")
     for k, v in pairs(data.state) do
-        print(" - " .. k .. ": " .. v)
+        print(" - " .. k .. ": " .. tostring(v))
     end
 else
     print("No block in front of turtle: " .. data)
