@@ -18,6 +18,15 @@ local chests = Set({
 	"ironchest:iron_chest"
 })
 
+-- Block IDs that will cause the turtle to cancel its job
+-- if the block is placed next to the starting location
+local cancelSides = Set({
+	"minecraft:double_stone_slab" -- a normal stone slab is usually used to block water on the sides
+})
+local cancelTop = Set({
+	"minecraft:stone_slab"
+}) .. cancelSides
+
 local filler = Set({
 	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
 	"minecraft:dirt",
@@ -195,10 +204,35 @@ function moveToChest()
 		return false
 	end
 
+	-- Check if there is a cancel block above
+	local successUp, dataUp = turtle.inspectUp()
+	if successUp and cancelTop[dataUp.name] then
+		numOfTunnels = -1
+		return false
+	end
+
 	checkFuel()
 
-	-- Returns to the origin if there is more to do
+	-- Check if there is a cancel block on either side
+	turtle.turnRight()
+	
+	local successRight, dataRight = turtle.inspect()
+	if successRight and cancelSides[dataRight.name] then
+		numOfTunnels = -1
+		return false
+	end
+
 	movement.turnAround()
+
+	local successLeft, dataLeft = turtle.inspect()
+	if successLeft and cancelSides[dataLeft.name] then
+		numOfTunnels = -1
+		return false
+	end
+
+	turtle.turnLeft()
+
+	-- Returns to the origin if there is more to do
 	for i = 1, actualStepsMoved do
 		dig.forward(true)
 	end
@@ -498,4 +532,8 @@ if not atStartingLocation then
 	moveToStartingLocation()
 end
 
-print("Finished!")
+if numOfTunnels < 0 then
+	print("Cancelled!")
+else
+	print("Finished!")
+end
