@@ -37,7 +37,7 @@ local filler = Set({
 	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
 
 	-- New changes 6/8/23
-	"minecraft:cobblestone_deepslate",
+	"minecraft:cobbled_deepslate",
 	"minecraft:granite",
 	"minecraft:diorite",
 	----------------------
