@@ -1,5 +1,4 @@
 -- Imports
-
 local args = require("lib.args")
 local Location = require("lib.Location")
 local Set = require("lib.Set")
@@ -7,8 +6,14 @@ local movement = require("lib.movement")
 local dig = require("lib.dig")
 local inventory = require("lib.inventory")
 
--- Static Variables
+-- Verify this is a turtle
+if not turtle then 
+	printError("Requires turtle")
+	return
+end
 
+
+-- Static Variables
 local torchID = "minecraft:torch"
 
 -- Breadcumbs must not be affected by water (so not torches)
@@ -34,14 +39,11 @@ local cancelTop = Set({
 }) .. cancelSides
 
 local filler = Set({
-	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
-
-	-- New changes 6/8/23
 	"minecraft:cobbled_deepslate",
 	"minecraft:granite",
 	"minecraft:diorite",
-	----------------------
 
+	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
 	"minecraft:dirt",
 	"minecraft:grass",
 	"minecraft:stone",
@@ -50,9 +52,7 @@ local filler = Set({
 })
 
 local trash = Set({
-	-- New changes 6/8/23	
 	"minecraft:tuff",
-	---------------------
 
 	"minecraft:sand",
 	"minecraft:sandstone",
@@ -65,8 +65,8 @@ local trash = Set({
 }) .. filler
 
 local badblocks = Set({
-	"minecraft:bedrock",
 	torchID,
+	"minecraft:bedrock",
 	"minecraft:lava",
 	"minecraft:stone_stairs",
 	"minecraft:flowing_lava",
@@ -80,31 +80,50 @@ local badblocks = Set({
 }) .. trash .. chests
 
 -- Welcome messages
-
-print("Smart Branch Miner")
-print(" ")
+textutils.pagedPrint("Smart branch miner")
 
 -- Configuration
-
 local targs = { ... }
 
-if args.count(targs) < 4 then
-	-- Print help
-	textutils.pagedPrint("Arguments: mine [num-of-tunnels] [tunnel-depth] [tunnel-offset] [side:left|right] [use-torches:0|1] [use-chest:0|1]")
-	textutils.pagedPrint("- num-of-tunnels: The number of tunnels to mine from the chest.")
-	textutils.pagedPrint("- tunnel-depth: The number of blocks to mine from the main mining shaft.")
-	textutils.pagedPrint("- tunnel-offset: The number of blocks to move forward from the starting location before mining the first tunnel.")
-	textutils.pagedPrint("- side: Which side of the main mining shaft the turtle is on.")
-	textutils.pagedPrint("? use-torches=false: Whether to use torches to light the tunnels.")
-	textutils.pagedPrint("? use-chest=true: Whether to store items in a chest at the turtle's starting location.")
-	textutils.pagedPrint("Instructions:")
-	textutils.pagedPrint("- Place turtle facing down main tunnel on the side it should mine.")
-	textutils.pagedPrint("- A chest should be directly behind the turtle.")
-	textutils.pagedPrint("- The turtle will use " .. tostring(breadcrumbIDs) .. " to mark each branching tunnel as complete.")
-	return
+local numOfTunnels
+local tunnelDepth
+local tunnelOffset
+local side
+local useTorches
+local useChest
+
+if args.count(targs) == 0 then
+	print("Tunnel count: [int]")
+	numOfTunnels = tonumber(read())
+
+	print("Branch depth: [int]")
+	tunnelDepth = tonumber(read())
+
+	print("Start offset: [int]")
+	tunnelOffset = tonumber(read())
+
+	print("Side: [right|left]")
+	side = read()
+
+	print("Place torches?: [true|false]")
+	useTorches = read()
+
+	print("Use chest?: [true|false]")	
+	useChest = read()
+
+elseif args.count(targs) >= 4 then
+	numOfTunnels = tonumber(targs[1])
+	tunnelDepth = tonumber(targs[2])	
+	tunnelOffset = tonumber(targs[3])
+	side = targs[4]
+	useTorches = targs[5]
+	useChest = targs[6]
+else 
+	print("Error: Wrong number of arguments")
+	return 
 end
 
-local numOfTunnels = tonumber(targs[1])
+-- Check numOfTunnels
 if numOfTunnels == nil then
 	print("Error: [num-of-tunnels] must be a number!")
 	return
@@ -113,7 +132,7 @@ elseif numOfTunnels <= 0 then
 	return
 end
 
-local tunnelDepth = tonumber(targs[2])
+-- Check tunnelDepth
 if tunnelDepth == nil then
 	print("Error: [tunnel-depth] must be a number!")
 	return
@@ -122,7 +141,7 @@ elseif tunnelDepth <= 0 then
 	return
 end
 
-local tunnelOffset = tonumber(targs[3])
+-- Check tunnelOffset
 if tunnelOffset == nil then
 	print("Error: [tunnel-offset] must be a number!")
 	return
@@ -131,30 +150,40 @@ elseif tunnelOffset < 0 then
 	return
 end
 
-local side = nil
-if targs[4] == "left" or targs[4] == "right" then
-	side = targs[4]
-else
-	print("Error: [side] must be either 'left' or 'right'!")
+-- Check side
+if side == nil then
+	print("Error: [Side] must not be null")
+	return
+elseif side ~= "right" or side ~= "left" then
+	print("Error: [side] must be either right or left")
 	return
 end
 
-local useTorches = tonumber(targs[5])
+-- Check useTorches
 if useTorches == nil then
-	useTorches = false
+	useTorches = 0
+elseif useTorches == "true" then
+	useTorches = 1
+elseif useTorches == "false" then
+	useTorches = 0
 else
-	useTorches = useTorches == 1
+	print("Error: [use-torches] must be true or false")
+	return
 end
 
-local useChest = tonumber(targs[6])
+-- Check useChest
 if useChest == nil then
-	useChest = true
-else
-	useChest = useChest == 1
+	useChest = 1
+elseif useChest == "true" then
+	useChest = 1
+elseif useChest == "false" then
+	useChest = 0
+else 
+	print("Error: [use-chest] must be true or false")
+	return
 end
 
 -- Constants
-
 local BLOCKS_BETWEEN_EACH_TUNNEL = 2
 local MAX_DISTANCE = 5 -- distance to search for valuables away from the tunnel
 local FUEL_SLOT = 16
@@ -163,12 +192,10 @@ local FUEL_NEEDED = 5000 -- this should be calculated based on numOfTunnels and 
 local TORCHES_NEEDED = (tunnelDepth > 14) and (tunnelDepth / 14) or 0
 
 -- Variables
-
 local distanceFromChest = 0
 local torchesgot = inventory.countID(torchID)
 
 -- Startup diagnostics
-
 print("Distance to mine: ", tunnelDepth)
 if useTorches then
 	print("Torches needed: ", TORCHES_NEEDED)
@@ -176,7 +203,6 @@ if useTorches then
 end
 
 -- Functions
-
 function checkFuel()
 	if turtle.getFuelLevel() <= MIN_FUEL then
 		getFuel()
