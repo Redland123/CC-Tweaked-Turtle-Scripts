@@ -12,7 +12,7 @@ local inventory = require("lib.inventory")
 local torchID = "minecraft:torch"
 
 -- Breadcumbs must not be affected by water (so not torches)
-local breadcrumbID = Set({
+local breadcrumbIDs = Set({
 	"minecraft:cobbled_deepslate",
 	"minecraft:cobblestone"
 })
@@ -100,7 +100,7 @@ if args.count(targs) < 4 then
 	textutils.pagedPrint("Instructions:")
 	textutils.pagedPrint("- Place turtle facing down main tunnel on the side it should mine.")
 	textutils.pagedPrint("- A chest should be directly behind the turtle.")
-	textutils.pagedPrint("- The turtle will use " .. breadcrumbID .. " to mark each branching tunnel as complete.")
+	textutils.pagedPrint("- The turtle will use " .. breadcrumbIDs .. " to mark each branching tunnel as complete.")
 	return
 end
 
@@ -390,7 +390,7 @@ end
 -- Turtle should be facing into the tunnel before checking for the breadcrumb
 function hasBreadcrumb()
 	local check, data = turtle.inspect()
-	return check and breadcrumbID[data.name]
+	return check and breadcrumbIDs[data.name]
 end
 
 -- Turtle should be facing into the tunnel
@@ -445,7 +445,7 @@ function digBranch()
 	dig.down(true)
 
 	-- Place breadcrumb on first block of tunnel
-	if not inventory.selectID(breadcrumbID) then
+	if not inventory.selectIDs(breadcrumbIDs) then
 		return false
 	end
 	-- Try 5 times to place breadcrumb
@@ -517,7 +517,7 @@ repeat
 	if not hasBreadcrumb() then
 		-- If no breadcrumb, then dig branch tunnel
 		if not digBranch() then
-			print("Error: No " .. breadcrumbID .. " available to place breadcrumb!")
+			print("Error: No " .. breadcrumbIDs .. " available to place breadcrumb!")
 			return
 		end
 		if useChest then
