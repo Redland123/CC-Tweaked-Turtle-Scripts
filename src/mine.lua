@@ -39,6 +39,7 @@ local filler = Set({
 	-- New changes 6/8/23
 	"minecraft:deepslate",
 	"minecraft:granite",
+	"minecraft:diorite",
 	----------------------
 
 	"minecraft:dirt",
