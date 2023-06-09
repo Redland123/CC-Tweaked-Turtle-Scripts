@@ -100,7 +100,7 @@ if args.count(targs) < 4 then
 	textutils.pagedPrint("Instructions:")
 	textutils.pagedPrint("- Place turtle facing down main tunnel on the side it should mine.")
 	textutils.pagedPrint("- A chest should be directly behind the turtle.")
-	textutils.pagedPrint("- The turtle will use " .. breadcrumbIDs .. " to mark each branching tunnel as complete.")
+	textutils.pagedPrint("- The turtle will use " .. tostring(breadcrumbIDs) .. " to mark each branching tunnel as complete.")
 	return
 end
 
