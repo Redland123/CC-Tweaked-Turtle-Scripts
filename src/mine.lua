@@ -95,21 +95,27 @@ if args.count(targs) == 0 then
 
 	print("Tunnel count: [int]")
 	numOfTunnels = tonumber(read())
+	print("")
 
 	print("Branch depth: [int]")
 	tunnelDepth = tonumber(read())
+	print("")
 
 	print("Start offset: [int]")
 	tunnelOffset = tonumber(read())
+	print("")
 
 	print("Side: [right|left]")
 	side = read()
+	print("")
 
 	print("Place torches?: [true|false]")
 	useTorches = read()
+	print("")
 
 	print("Use chest?: [true|false]")	
 	useChest = read()
+	print("")
 
 elseif args.count(targs) >= 4 then
 	numOfTunnels = tonumber(targs[1])
@@ -156,7 +162,7 @@ if side == nil then
 	return
 elseif side ~= "right" or side ~= "left" then
 	print("Error: [side] must be either right or left")
-	print("It was:" + side)
+	print("It was:", side)
 	return
 end
 
