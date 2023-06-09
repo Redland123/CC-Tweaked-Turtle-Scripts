@@ -51,7 +51,7 @@ local filler = Set({
 
 local trash = Set({
 	-- New changes 6/8/23	
-	"minecraft:tuff"
+	"minecraft:tuff",
 	---------------------
 
 	"minecraft:sand",
