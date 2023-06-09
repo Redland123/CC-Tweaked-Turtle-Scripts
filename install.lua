@@ -23,7 +23,7 @@ local libs = {
 
 local args = { ... }
 local download = args[1] == "download"
-local urlPrefix = "https://raw.githubusercontent.com/Redland123/computercraft-turtle-scripts/master"
+local urlPrefix = "https://raw.githubusercontent.com/Redland123/computercraft-turtle-scripts/master/"
 
 function downloadLua(url, path)
     if not path then
