@@ -79,9 +79,6 @@ local badblocks = Set({
 	"minecraft:flowing_water"
 }) .. trash .. chests
 
--- Welcome messages
-textutils.pagedPrint("Smart branch miner")
-
 -- Configuration
 local targs = { ... }
 
@@ -93,6 +90,9 @@ local useTorches
 local useChest
 
 if args.count(targs) == 0 then
+	print("Start wizard:")
+	print("")
+
 	print("Tunnel count: [int]")
 	numOfTunnels = tonumber(read())
 
@@ -156,6 +156,7 @@ if side == nil then
 	return
 elseif side ~= "right" or side ~= "left" then
 	print("Error: [side] must be either right or left")
+	print("It was:" + side)
 	return
 end
 
