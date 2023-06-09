@@ -52,15 +52,17 @@ if not download then
         shell.run("install", "download")
     end
 else
+    local installPath = "custom/"
     -- Clean existing libs
-    fs.delete("lib")
+    fs.delete(installPath .. "lib")
+
     -- Download all scripts and libs from repo
     for _, script in ipairs(scripts) do
-        downloadLua("src/" .. script, script)
+        downloadLua("src/" .. script, installPath .. script)
     end
     for _, lib in ipairs(libs) do
         local libPath = "lib/" .. lib
-        downloadLua("src/" .. libPath, libPath)
+        downloadLua("src/" .. libPath, installPath .. libPath)
     end
     print("Successfully installed scripts!")
 end
