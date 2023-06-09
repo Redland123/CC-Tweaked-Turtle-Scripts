@@ -10,7 +10,12 @@ local inventory = require("lib.inventory")
 -- Static Variables
 
 local torchID = "minecraft:torch"
-local breadcrumbID = "minecraft:cobblestone" -- a breadcrumb must not be affected by water (so no torches)
+
+-- Breadcumbs must not be affected by water (so not torches)
+local breadcrumbID = Set({
+	"minecraft:cobbled_deepslate",
+	"minecraft:cobblestone"
+})
 
 local chests = Set({
 	"minecraft:chest",
@@ -21,14 +26,21 @@ local chests = Set({
 -- Block IDs that will cause the turtle to cancel its job
 -- if the block is placed next to the starting location
 local cancelSides = Set({
-	"minecraft:double_stone_slab" -- a normal stone slab is usually used to block water on the sides
+	"minecraft:white_wool"
 })
+
 local cancelTop = Set({
-	"minecraft:stone_slab"
+	"minecraft:white_wool"
 }) .. cancelSides
 
 local filler = Set({
 	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
+
+	-- New changes 6/8/23
+	"minecraft:deepslate",
+	"minecraft:granite",
+	----------------------
+
 	"minecraft:dirt",
 	"minecraft:grass",
 	"minecraft:stone",
@@ -37,6 +49,10 @@ local filler = Set({
 })
 
 local trash = Set({
+	-- New changes 6/8/23	
+	"minecraft:tuff"
+	---------------------
+
 	"minecraft:sand",
 	"minecraft:sandstone",
 	"minecraft:gravel",
@@ -373,7 +389,7 @@ end
 -- Turtle should be facing into the tunnel before checking for the breadcrumb
 function hasBreadcrumb()
 	local check, data = turtle.inspect()
-	return check and data.name == breadcrumbID
+	return check and breadcrumbID[data.name]
 end
 
 -- Turtle should be facing into the tunnel
