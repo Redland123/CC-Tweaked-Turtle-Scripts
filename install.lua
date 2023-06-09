@@ -1,25 +1,16 @@
 local scripts = {
-    "blockID",
-    "craftbat",
-    "craftcable",
-    "craftcircuit",
-    "fill",
-    "itemID",
     "mine",
-    "rubber",
-    "concrete",
+    "refuelfromlava",
     "refueling",
-    "refuelfromlava"
 }
 
 local libs = {
     "args",
-    "chest",
     "dig",
     "inventory",
     "Location",
+    "movement",
     "Set",
-    "movement"
 }
 
 local args = { ... }
