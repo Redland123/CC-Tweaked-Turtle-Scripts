@@ -167,11 +167,11 @@ end
 
 -- Check useTorches
 if useTorches == nil then
-	useTorches = 0
+	useTorches = false
 elseif useTorches == "true" then
-	useTorches = 1
+	useTorches = true
 elseif useTorches == "false" then
-	useTorches = 0
+	useTorches = false
 else
 	print("Error: [use-torches] must be true or false")
 	return
@@ -179,11 +179,11 @@ end
 
 -- Check useChest
 if useChest == nil then
-	useChest = 1
+	useChest = true
 elseif useChest == "true" then
-	useChest = 1
+	useChest = true
 elseif useChest == "false" then
-	useChest = 0
+	useChest = false
 else 
 	print("Error: [use-chest] must be true or false")
 	return
