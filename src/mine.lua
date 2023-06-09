@@ -160,9 +160,8 @@ end
 if side == nil then
 	print("Error: [Side] must not be null")
 	return
-elseif side ~= "right" or side ~= "left" then
+elseif side ~= "right" and side ~= "left" then
 	print("Error: [side] must be either right or left")
-	print("It was:", side)
 	return
 end
 
