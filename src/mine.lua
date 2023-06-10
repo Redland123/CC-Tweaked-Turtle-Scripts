@@ -215,7 +215,7 @@ function checkFuel()
 end
 
 function getFuel()
-	print("Please insert more fuel into slot " .. FUEL_SLOT)
+	print("Please insert more fuel into slot ", FUEL_SLOT)
 	local oldSelection = turtle.getSelectedSlot()
 	repeat
 		sleep(1)
@@ -435,7 +435,7 @@ function digBranch()
 		turtle.digUp()
 
 		--Allows for the user to check the fuel level of the turtle while mine is active
-		print("Fuel level: " .. ((turtle.getFuelLevel()/turtle.getFuelLimit()) * 100) .. " %")
+		print("Fuel level: ", ((turtle.getFuelLevel()/turtle.getFuelLimit()) * 100), " %")
 
 		processValuables(false)
 
@@ -547,7 +547,7 @@ repeat
 	if not hasBreadcrumb() then
 		-- If no breadcrumb, then dig branch tunnel
 		if not digBranch() then
-			print("Error: No " .. breadcrumbIDs .. " available to place breadcrumb!")
+			print("Error: No ", breadcrumbIDs, " available to place breadcrumb!")
 			return
 		end
 		if useChest then

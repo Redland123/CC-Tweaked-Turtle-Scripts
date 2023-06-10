@@ -7,6 +7,11 @@ function Set.is(s)
 end
 
 function instanceMetatable.__concat(leftSet, rightSet)
+	if type(leftSet) ~= "table" or type(rightSet) ~= "table" then
+		print("Error: set concat given string instead of table")
+		return nil
+	end
+
 	local largest = 0
 	-- Iterate over leftSet to find largest index
 	for _, i in pairs(leftSet) do
@@ -15,6 +20,7 @@ function instanceMetatable.__concat(leftSet, rightSet)
 		end
 	end
 	-- Copy keys from rightSet and offset by the largest in the leftSet
+	-- TODO: Check if bug is fixed: "Bad argument (table expected, got string)" line 18: "for k, i in pairs(rightSet) do"
 	for k, i in pairs(rightSet) do
 		leftSet[k] = i + largest
 	end
