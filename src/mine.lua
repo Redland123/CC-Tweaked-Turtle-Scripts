@@ -54,6 +54,7 @@ local trash = Set({
 	"minecraft:sandstone",
 	"minecraft:gravel",
 	"minecraft:stonebrick",
+	"minecraft:dripstone_block",
 	"minecraft:end_bricks",
 	"minecraft:mycelium",
 	"projectx:xycronium_crystal", -- handles all colors of crystals
