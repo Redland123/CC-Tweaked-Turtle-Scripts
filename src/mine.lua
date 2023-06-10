@@ -59,6 +59,7 @@ local trash = Set({
 	"minecraft:tuff",
 	"minecraft:stone",
 	"minecraft:granite",
+	"minecraft:deepslate",
 	------------------------------
 	"minecraft:sand",
 	"minecraft:sandstone",
