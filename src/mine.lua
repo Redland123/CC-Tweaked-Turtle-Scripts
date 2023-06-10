@@ -37,7 +37,7 @@ local cancelTop = Set({
 	"minecraft:white_wool"
 }) .. cancelSides
 
-local filler = breadcrumbIDs .. Set({
+local filler = Set(breadcrumbIDs) .. Set({
 	"minecraft:tuff",
 	"minecraft:deepslate",
 	"minecraft:stone",
