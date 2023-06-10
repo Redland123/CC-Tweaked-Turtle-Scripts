@@ -39,10 +39,9 @@ local cancelTop = Set({
 
 local filler = Set(breadcrumbIDs) .. Set({
 	"minecraft:tuff",
-	"minecraft:deepslate",
+	"minecraft:cobbled_deepslate",
 	"minecraft:stone",
 	"minecraft:granite",
-	"minecraft:diorite",
 	"minecraft:dirt",
 	"minecraft:grass",
 	"minecraft:netherrack",
@@ -55,6 +54,8 @@ local trash = Set({
 	"minecraft:gravel",
 	"minecraft:stonebrick",
 	"minecraft:dripstone_block",
+	"minecraft:andesite",
+	"minecraft:smooth_basalt",
 	"minecraft:end_bricks",
 	"minecraft:mycelium",
 	"projectx:xycronium_crystal", -- handles all colors of crystals
