@@ -12,7 +12,6 @@ if not turtle then
 	return
 end
 
-
 -- Static Variables
 local torchID = "minecraft:torch"
 
@@ -38,22 +37,19 @@ local cancelTop = Set({
 	"minecraft:white_wool"
 }) .. cancelSides
 
-local filler = Set({
-	"minecraft:cobbled_deepslate",
+local filler = breadcrumbIDs .. Set({
+	"minecraft:tuff",
+	"minecraft:deepslate",
+	"minecraft:stone",
 	"minecraft:granite",
 	"minecraft:diorite",
-
-	"minecraft:cobblestone", -- prioritize cobblestone because it's also used as a breadcrumb
 	"minecraft:dirt",
 	"minecraft:grass",
-	"minecraft:stone",
 	"minecraft:netherrack",
 	"projectred-exploration:stone"
 })
 
 local trash = Set({
-	"minecraft:tuff",
-
 	"minecraft:sand",
 	"minecraft:sandstone",
 	"minecraft:gravel",
