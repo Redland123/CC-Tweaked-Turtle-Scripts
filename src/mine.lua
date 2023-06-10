@@ -38,24 +38,33 @@ local cancelTop = Set({
 }) .. cancelSides
 
 local filler = Set(breadcrumbIDs) .. Set({
-	"minecraft:tuff",
+	"minecraft:cobblestone",
 	"minecraft:cobbled_deepslate",
-	"minecraft:stone",
-	"minecraft:granite",
 	"minecraft:dirt",
-	"minecraft:grass",
 	"minecraft:netherrack",
-	"projectred-exploration:stone"
 })
 
 local trash = Set({
-	"minecraft:sand",
-	"minecraft:sandstone",
-	"minecraft:gravel",
-	"minecraft:stonebrick",
+	-- New stuff -----------------
+	"minecraft:andesite",
 	"minecraft:dripstone_block",
+	"create:ochrum",
+	"create:scoria",
+	"create:crimsite",
+	"create:veridium",
+	"create:limestone",
+	"minecraft:diorite",
 	"minecraft:andesite",
 	"minecraft:smooth_basalt",
+	"minecraft:tuff",
+	"minecraft:stone",
+	"minecraft:granite",
+	------------------------------
+	"minecraft:sand",
+	"minecraft:sandstone",
+	"minecraft:grass",
+	"minecraft:gravel",
+	"minecraft:stonebrick",
 	"minecraft:end_bricks",
 	"minecraft:mycelium",
 	"projectx:xycronium_crystal", -- handles all colors of crystals
@@ -405,7 +414,6 @@ function removeTrash(fillerSlot)
 end
 
 -- Primary Digging Functions
-
 function digMain()
 	if dig.forward() then
 		-- Increment distanceFromChest for returning to chest
@@ -491,7 +499,6 @@ function digBranch()
 end
 
 -- Verify that a chest is next to the turtle (if useChest is enabled)
-
 if useChest then
 	-- Attempt to find chest (could be in any direction)
 	local found = false

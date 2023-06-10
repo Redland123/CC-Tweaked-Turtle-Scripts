@@ -8,7 +8,7 @@ end
 
 function instanceMetatable.__concat(leftSet, rightSet)
 	if type(leftSet) ~= "table" or type(rightSet) ~= "table" then
-		print("Error: set concat given string instead of table")
+		print("Error: set concat given ", type(leftSet), " and ", type(rightSet), "instead of table")
 		return nil
 	end
 
