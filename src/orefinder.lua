@@ -8,33 +8,46 @@ local computerLocation = {x = -252, y = 21, z = -827}
 
 local blockId
 local scanData
-local player = "Redland123"
+local player
+
+local debug = false
 
 local vector = {length = 0, x = 0, y = 0, z = 0}
 
 local blockList = {}
 
-rednet.broadcast("Enter block Id: ")
--- blockId = read()
-blockId = "minecraft:diamond_block"
+print("Enter name: ")
+player = read()
+print()
 
-rednet.broadcast("Enter scan radius: ")
-scanData = geoScanner.scan(tonumber(read()))
+print("Enter block Id: ")
+blockId = read()
+print()
 
--- rednet.broadcast()
+print("Enter scan radius: ")
+scanData, error = geoScanner.scan(tonumber(read()))
+print()
+
+print("Debug enabled: ")
+debug = read()
+print()
+
+if scanData == nil then
+    print(error)
+    return
+end
+
+term.clear()
 
 for i, v in ipairs(scanData) do
     if (v["name"]) == blockId then
         table.insert(blockList, v)
-        -- rednet.broadcast(v["name"], "added")
     end
 end
 
 for i, v in ipairs(blockList) do
-    rednet.broadcast(i, v["name"], v["x"], v["y"], v["z"])
+    rednet.broadcast(tostring(i) .. tostring(v["name"]) .. tostring(v["x"]) .. tostring(v["y"]) .. tostring(v["z"]))
 end
-
-read()
 
 while 1 do
     pPos = playerFinder.getPlayerPos(player)
@@ -44,10 +57,12 @@ while 1 do
         vector["y"] = pPos["y"] - (v["y"] + computerLocation["y"])
         vector["z"] = pPos["z"] - (v["z"] + computerLocation["z"])
         
-        rednet.broadcast(blockList[i]["name"])
-        rednet.broadcast("Vector: ", tostring(vector["x"]), tostring(vector["y"]), tostring(vector["z"]))
-        rednet.broadcast("Player: ", tostring(pPos["x"]), tostring(pPos["y"]), tostring(pPos["z"]))
-        rednet.broadcast("Block Pos: ", tostring(v["x"] + computerLocation["x"]), tostring(v["y"] + computerLocation["y"]), v["z"] + computerLocation["z"])
+        if (debug == "true") then
+            rednet.broadcast(blockList[i]["name"])
+            rednet.broadcast("Vector: " .. tostring(vector["x"]) .. tostring(vector["y"]) .. tostring(vector["z"]))
+            rednet.broadcast("Player: " .. tostring(pPos["x"]) .. tostring(pPos["y"]) .. tostring(pPos["z"]))
+            rednet.broadcast("Block Pos: " .. tostring(v["x"] + computerLocation["x"]) .. tostring(v["y"] + computerLocation["y"]) .. tostring(v["z"] + computerLocation["z"]))
+        end
 
         local tmpValue = ((vector["x"] ^ 2) - (vector["y"] ^ 2) - (vector["z"] ^ 2))
 
@@ -57,20 +72,28 @@ while 1 do
  
         local newVectorLength = math.sqrt(tmpValue)
 
-        rednet.broadcast("New vector length:", newVectorLength)
+        if (debug == "true") then
+            rednet.broadcast("New vector length:" .. tostring(newVectorLength))
+        end
 
         if i == 1 then
             vector["length"] = newVectorLength
         elseif newVectorLength < vector["length"] then
             vector["length"] = newVectorLength
-            rednet.broadcast("Nearest changed")
+
+            if (debug == "true") then 
+                rednet.broadcast("Nearest changed")
+            end
         end
 
-        rednet.broadcast()
+        rednet.broadcast("")
     end
 
-    rednet.broadcast("Distance to nearest:", vector["length"])      
-    rednet.broadcast()
+    rednet.broadcast("Distance to nearest:" .. tostring(vector["length"])) 
+    rednet.broadcast("")
+
+    print("Distance to nearest:", vector["length"])
+    print()
 
     sleep(1)
 end
