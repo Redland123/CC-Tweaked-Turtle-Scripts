@@ -12,7 +12,13 @@
     -- if the turtle is a mining turtle it will break any blocks    --
     -- blocking it's path                                           --
     ------------------------------------------------------------------
-     
+        
+    -- Verify this is a turtle
+    if not turtle then 
+      printError("Requires turtle")
+      return
+    end
+
     local tArgs = { ... }
      
     if #tArgs == 0 then
@@ -146,7 +152,9 @@
             end
       end
     end
-     
+    
+    print("Fuel percentage: ", (turtle.getFuelLevel()/turtle.getFuelLimit()) * 100)
+
     turtle.turnRight()
     moveForward()
     turtle.turnRight()

@@ -23,7 +23,7 @@ local breadcrumbIDs = Set({
 
 local chests = Set({
 	"minecraft:chest",
-	"enderstorage:ender_storage",
+	"enderstorage:ender_chest",
 	"ironchest:iron_chest"
 })
 
