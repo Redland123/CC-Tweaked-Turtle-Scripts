@@ -1,10 +1,10 @@
-local playerFinder = peripheral.wrap("bottom")
-local pPos = 0
+-- local playerFinder = peripheral.wrap("bottom")
+-- local pPos = 0
 
-local geoScanner = peripheral.wrap("right")
-rednet.open("top")
+local geoScanner = peripheral.wrap("back")
+-- rednet.open("top")
 
-local computerLocation = {x = -252, y = 21, z = -827}
+-- local computerLocation = {x = -252, y = 21, z = -827}
 
 local blockId
 local scanData

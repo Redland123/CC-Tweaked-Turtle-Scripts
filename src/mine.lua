@@ -61,6 +61,8 @@ local trash = Set({
 	"minecraft:granite",
 	"minecraft:deepslate",
 	------------------------------
+	"minecraft:grass",
+	"minecraft:grass_block",
 	"minecraft:sand",
 	"minecraft:sandstone",
 	"minecraft:grass",
@@ -414,11 +416,20 @@ function removeTrash(fillerSlot)
 	end
 end
 
+function placeBelow()
+	local fillerSlot = getOptimalFiller()
+	if fillerSlot > 0 then
+		turtle.select(fillerSlot)
+		turtle.placeDown()
+	end
+end
+
 -- Primary Digging Functions
 function digMain()
 	if dig.forward() then
 		-- Increment distanceFromChest for returning to chest
 		distanceFromChest = distanceFromChest + 1
+		placeBelow()
 	end
 	dig.up(true)
 	turtle.digUp()
@@ -449,11 +460,7 @@ function digBranch()
 		processValuables(false)
 
 		-- Attempt to place a filler block below turtle
-		local fillerSlot = getOptimalFiller()
-		if fillerSlot > 0 then
-			turtle.select(fillerSlot)
-			turtle.placeDown()
-		end
+		placeBelow()
 
 		inventory.compact()
 		removeTrash(fillerSlot)
